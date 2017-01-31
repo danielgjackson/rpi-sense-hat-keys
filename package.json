@@ -1,0 +1,22 @@
+{
+  "name": "rpi-sense-hat-keys",
+  "version": "0.0.1",
+  "description": "Node device access to the Raspberry Pi Sense HAT joystick.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "demo": "node demo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danielgjackson/rpi-sense-hat-keys"
+  },
+  "engines": {
+	"node": "7.0.0"
+  },
+  "keywords": ["Raspberry Pi", "Sense HAT", "joystick", "keys"],
+  "author": "Daniel Jackson",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+  }
+}
