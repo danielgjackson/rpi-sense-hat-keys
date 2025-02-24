@@ -1,5 +1,5 @@
 // Raw Key Reader for Raspberry Pi Sense HAT Joystick
-// Dan Jackson, 2017
+// Dan Jackson, 2017-2025
 
 const fs = require('fs');
 
@@ -88,13 +88,31 @@ class HatKeys {
 	static parseEvent(buffer) {
 		//console.log(buffer.toString('hex'), " ", buffer.length);
 		
-		let rawEvent = {
-			timeS: buffer.readUInt32LE(0),
-			timeUS: buffer.readUInt32LE(4),
-			type: buffer.readUInt16LE(8),
-			code: buffer.readUInt16LE(10),
-			value: buffer.readInt32LE(12),
-		};
+		let rawEvent;
+		// HACK: Not certain this is robust (32-bit times in a 32 byte packet, and 64-bit times in a 48 byte packet) 
+		if (buffer.byteLength > 32) {
+			// Read 64-bit times
+			rawEvent = {
+				timeS: buffer.readUInt32LE(0),
+				timeS_high: buffer.readUInt32LE(0),
+				timeUS: buffer.readUInt32LE(4),
+				timeUS_high: buffer.readUInt32LE(4),
+				type: buffer.readUInt16LE(8),
+				code: buffer.readUInt16LE(10),
+				value: buffer.readInt32LE(12),
+			};
+		} else {
+			// Read 32-bit times
+			rawEvent = {
+				timeS: buffer.readUInt32LE(0),
+				timeS_high: 0,
+				timeUS: buffer.readUInt32LE(4),
+				timeUS_high: 0,
+				type: buffer.readUInt16LE(8),
+				code: buffer.readUInt16LE(10),
+				value: buffer.readInt32LE(12),
+			};
+		}
 		
 		// Ignore unknown types
 		if (rawEvent.type != 1) { return null; }
@@ -109,6 +127,7 @@ class HatKeys {
 		}
 		
 		let event = {
+			// TODO: Use _high 32 bits of time for timestamps from 2038
 			time: rawEvent.timeS + (rawEvent.timeUS / 1000000),
 			key: rawEvent.code,
 			name: keyName,
