@@ -94,12 +94,12 @@ class HatKeys {
 			// Read 64-bit times
 			rawEvent = {
 				timeS: buffer.readUInt32LE(0),
-				timeS_high: buffer.readUInt32LE(0),
-				timeUS: buffer.readUInt32LE(4),
-				timeUS_high: buffer.readUInt32LE(4),
-				type: buffer.readUInt16LE(8),
-				code: buffer.readUInt16LE(10),
-				value: buffer.readInt32LE(12),
+				timeS_high: buffer.readUInt32LE(4),
+				timeUS: buffer.readUInt32LE(8),
+				timeUS_high: buffer.readUInt32LE(12),
+				type: buffer.readUInt16LE(16),
+				code: buffer.readUInt16LE(18),
+				value: buffer.readInt32LE(20),
 			};
 		} else {
 			// Read 32-bit times
