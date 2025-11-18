@@ -17,8 +17,11 @@ class HatKeys {
 		
 		this.handler = null;
 		
+		// HACK: Assume known 64-bit processor architectures always imply 64-bit time.
+		this.using64bitTime = process.arch.includes('64');
+		
 		// Buffer
-		this.bufferSize = 24;
+		this.bufferSize = this.using64bitTime ? 24 : 16;
 		this.buffer = new Buffer(this.bufferSize);
 		
 		// Device
@@ -89,8 +92,8 @@ class HatKeys {
 		//console.log(buffer.toString('hex'), " ", buffer.length);
 		
 		let rawEvent;
-		// HACK: Not certain this is robust (32-bit times in a 32 byte packet, and 64-bit times in a 48 byte packet) 
-		if (buffer.byteLength > 32) {
+		// HACK: Not certain this is robust (32-bit times in 16-byte packets, and 64-bit times in 24-byte packets) 
+		if (buffer.length >= 24) {
 			// Read 64-bit times
 			rawEvent = {
 				timeS: buffer.readUInt32LE(0),
@@ -128,7 +131,7 @@ class HatKeys {
 		
 		let event = {
 			// TODO: Use _high 32 bits of time for timestamps from 2038
-			time: rawEvent.timeS + (rawEvent.timeUS / 1000000),
+			time: rawEvent. rawEvent.timeS + (rawEvent.timeUS / 1000000),
 			key: rawEvent.code,
 			name: keyName,
 			status: rawEvent.value,
@@ -144,3 +147,4 @@ class HatKeys {
 }
 
 module.exports = HatKeys;
+this.bufferSize
